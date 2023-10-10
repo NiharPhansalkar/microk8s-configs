@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu
+  template:
+    metadata:
+      labels:
+        app: ubuntu
+    spec:
+      containers:
+        - name: ubuntu-container
+          image: your_image
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: config-volume
+              mountPath: /tmp/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: app-config
+        - name: temp-volume
+          emptyDir: {}
+      initContainers:
+        - name: copy-config
+          image: busybox
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "cp /tmp/config/config.yaml /config/config.yaml"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /tmp/config
+            - name: temp-volume
+              mountPath: /config

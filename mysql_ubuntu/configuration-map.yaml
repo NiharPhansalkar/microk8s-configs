@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  config.yaml: |
+    server:
+      port: your_port
+    database:
+      host: mysql-service
+      port: 3306
+      name: your_database
+      username: your_username
+      password: 'your_password'
